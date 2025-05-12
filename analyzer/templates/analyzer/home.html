@@ -1,0 +1,40 @@
+{% extends 'analyzer/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>Welcome to Amharic Text Analyzer</h1>
+        <p class="lead">Upload HTML, XML, or text files containing Amharic text for analysis.</p>
+        <a href="{% url 'upload_document' %}" class="btn btn-primary">Upload New Document</a>
+    </div>
+</div>
+
+{% if documents %}
+    <h2>Recent Analyses</h2>
+    <div class="row">
+        {% for doc in documents %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card stats-card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ doc.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">{{ doc.document_type }} - {{ doc.uploaded_at|date:"M d, Y" }}</small>
+                        </p>
+                        <ul class="list-unstyled">
+                            <li><strong>Language:</strong> {{ doc.language }}</li>
+                            <li><strong>Words:</strong> {{ doc.word_count }}</li>
+                            <li><strong>Unique Words:</strong> {{ doc.unique_words }}</li>
+                            <li><strong>Zipf Correlation:</strong> {{ doc.zipf_correlation }}</li>
+                        </ul>
+                        <a href="{% url 'document_detail' pk=doc.pk %}" class="btn btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        No documents have been analyzed yet. Start by uploading a document!
+    </div>
+{% endif %}
+{% endblock %} 

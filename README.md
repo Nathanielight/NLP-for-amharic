@@ -1,114 +1,163 @@
+Amharic Languages Text Analysis System
 
+## Technology Stack
 
-# **Amharic Information Retrieval System**
+- **Backend:** Django (Python)
+- **Frontend:** Django Templates, Chart.js (for visualization)
+- **NLP Libraries:** NLTK, langdetect, scikit-learn, BeautifulSoup4, pandas, numpy
+- **Database:** SQLite (default with Django)
 
-## **Introduction and Overview**
+## Features
 
-We are currently enhancing the retrieval process of Amharic search engines. This project focuses on developing efficient text preprocessing, indexing, and creating a posting file. After weighing every term in the corpus using **TF-IDF**, the IR system compares these weights with a given query using **Cosine Similarity** and ranks the documents for retrieval.
+### Text Collection and Preprocessing
+- Support for multiple file formats (HTML, XML, plain text)
+- Automatic markup removal
+- Language detection
+- Text normalization
 
----
+### Text Analysis
+1. **Tokenization**
+   - Word-level tokenization
+   - Special handling for Ethiopian language characters
+   - Punctuation handling
 
-## **Statement of the Problem and Justification**
+2. **Statistical Analysis**
+   - Word frequency calculation
+   - Word ranking by frequency
+   - Frequency vs. Rank plotting
+   - Zipf's law correlation analysis
+   - Product of rank and frequency calculation
 
-Amharic is the official working language of the Federal Democratic Republic of Ethiopia and is spoken by over 20 million people. Despite its wide use in text processing activities in governmental, non-governmental, and private institutions, there are no standardized tools available for Amharic text processing, including:
+3. **Text Normalization**
+   - Stop word removal
+   - Custom stemmer for Ethiopian languages
+   - Prefix and suffix handling
 
-- No affixes dictionary for Amharic.
-- Lack of a general stemmer for Amharic text.
-- Absence of a standard stop-word list.
+### Luhn's Idea Implementation
+- Upper and lower cut-off points for word selection
+- Automatic index term selection
+- Word frequency distribution analysis
 
-We aim to address these gaps using the **Hornmorphology Stemmer** for extracting the roots of words, despite the algorithm's inefficiency at times. We will enhance it to handle large text more efficiently.
+### Visualization Dashboard
+- Interactive dashboard for preprocessing steps (markup removal, tokenization, normalization, stopword removal)
+- Donut/progress charts using Chart.js
 
----
+## Installation & Running the Project
 
-## **Methodology**
+### 1. Clone the repository
+```bash
+git clone https://github.com/yourusername/IR-system-for-Amharic.git
+cd IR-system-for-Amharic
+```
 
-This project is divided into four main parts, each addressing a specific problem in the IR system, from text preprocessing to query optimization and retrieval:
+### 2. Create and activate a virtual environment
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On Mac/Linux:
+source venv/bin/activate
+```
 
-### **Part 1: Text Processing Pipeline**
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-- **Objective**: Process Amharic language documents using various Python libraries to extract, normalize, and tokenize text.
-- **Key Actions**:
-  - Extract text from **PDF files**.
-  - Tokenize and normalize text, handling Amharic punctuation and apostrophes.
-  - Analyze word frequencies and remove high-frequency index terms.
-  - Save filtered tokens to a file for further use in indexing.
+### 4. Run Django migrations
+```bash
+python manage.py migrate
+```
 
-### **Part 2: Stop Word Removal and Index Generation**
+### 5. Start the Django development server
+```bash
+python manage.py runserver
+```
 
-- **Objective**: Remove stop words to improve text analysis and create an index.
-- **Key Actions**:
-  - Read stop words from **"stopwords.txt"**.
-  - Remove stop words from tokenized text.
-  - Write the resulting words (index) to **"index.txt"** for future use in retrieval.
+### 6. Access the Web Interface
+Open your browser and go to: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-### **Part 3: Creating the Inverted Index**
+- Upload your text file (HTML, XML, or plain text)
+- View the analysis results and interactive preprocessing dashboard
 
-- **Objective**: Build an inverted index for fast document retrieval.
-- **Key Actions**:
-  - Create a dictionary of tokens, document IDs, and word frequencies.
-  - Use the **pickle module** for serializing the data to save the document vectors.
-  - Load and retrieve document vectors for efficient search operations.
+## Usage
 
-### **Part 4: Query Optimization and Retrieval**
+### Web Interface
+1. Open your browser and navigate to `http://127.0.0.1:8000`
+2. Upload your text file (HTML, XML, or plain text)
+3. View the analysis results including:
+   - Word frequency distribution
+   - Zipf's law correlation
+   - Language detection
+   - Statistical properties
+   - Preprocessing dashboard with visualizations
 
-- **Objective**: Rank documents based on their relevance to a query using **TF-IDF** and **Cosine Similarity**.
-- **Key Actions**:
-  - Create document vectors using **TF-IDF** scores.
-  - Calculate **Cosine Similarity** between the document vectors and the query vector.
-  - Rank and retrieve the most relevant documents for a given query.
+### Text Analysis Process
 
----
+1. **Text Collection**
+   - The system accepts text in various Ethiopian languages
+   - Supports multiple file formats
+   - Automatically removes HTML/XML markup
 
-## **Why Python Was Chosen**
+2. **Tokenization**
+   - Splits text into individual words
+   - Handles special characters and punctuation
+   - Preserves Ethiopian language-specific characters
 
-We chose **Python** due to its extensive libraries and simplicity. Python's ecosystem is rich with tools for **Natural Language Processing (NLP)**, making it an ideal choice for handling the complexities of Amharic text processing. Key libraries used in this project include:
+3. **Statistical Analysis**
+   - Calculates word frequencies
+   - Ranks words by frequency
+   - Generates frequency vs. rank plots
+   - Analyzes Zipf's law correlation
+   - Calculates rank-frequency products
 
-- **nltk.tokenize**: For tokenizing the text.
-- **re**: For regular expression operations.
-- **os**: For handling file operations.
-- **collections**: Specifically, `Counter` for word frequency counting.
-- **pdfminer.high_level**: For PDF text extraction.
-- **matplotlib.pyplot**: For data visualization.
-- **pickle**: For serializing and deserializing Python objects.
+4. **Text Normalization**
+   - Removes stop words
+   - Applies stemming rules
+   - Handles prefixes and suffixes
 
----
+### Luhn's Idea Implementation
 
-## **Challenges Faced**
+The system implements Luhn's idea for index term selection:
 
-- **Corpus Collection**: Gathering a large and representative corpus of Amharic text was a significant challenge due to resource limitations.
-- **Suffix Removal**: Amharic words have complex suffixes, and finding a standard list for effective removal was difficult.
-- **Stemming**: Designing an efficient stemmer for Amharic was challenging due to the language's extensive dictionary and morphological complexity.
-- **Cut-off Points**: Deciding on appropriate cut-off points for frequent words to ensure both significant and less common terms are retained.
+1. **Cut-off Points**
+   - Upper cut-off: Words with frequency > 80% of maximum frequency
+   - Lower cut-off: Words with frequency < 20% of maximum frequency
+   - These thresholds are determined based on the distribution of word frequencies
 
----
+2. **Index Term Selection**
+   - Words between the cut-off points are considered for indexing
+   - High-frequency words (above upper cut-off) are considered too common
+   - Low-frequency words (below lower cut-off) are considered too rare
 
-## **Determining Cut-off Points**
+## Analysis Results
 
-The process of deciding on cut-off words was tedious, as it required determining a threshold to remove common words while retaining significant terms. Our initial cut-off aimed for:
-- A percentage cutoff greater than **20%**.
-- Removal of words that occurred **less than once** in the corpus.
+### Zipf's Law Analysis
+- The system calculates the correlation between word frequencies and ranks
+- A high correlation (>0.8) indicates adherence to Zipf's law
+- The frequency-rank product should be relatively constant
 
----
+### Word Distribution
+- Frequency vs. Rank plots show the distribution of words
+- The slope of the log-log plot indicates the Zipf exponent
+- Deviation from the expected distribution can indicate:
+  - Specialized vocabulary
+  - Technical content
+  - Multiple languages in the text
 
-## **Terms Chosen as Indices**
+## Technical Details
 
-Indexing terms are selected after stemming and stop word removal. These terms include the roots of tokens, excluding the most common words. The final index is created by generating a dictionary with the token as the key and the **Document ID** and **frequency** of the word as the value.
+### Language Support
+- Amharic (አማርኛ)
 
----
+### Stemming Rules
+- Prefix removal (e.g., "የ", "እንደ", "በ")
+- Suffix removal (e.g., "ው", "ች", "ን")
+- Compound word handling
+- Special character preservation
 
-## **Conclusion**
-
-The development of an **Amharic Information Retrieval System** has provided invaluable insights into natural language processing, especially for low-resource languages like Amharic. The system addresses the morphological complexities of Amharic, including its distinct script and intricate word formation processes. By utilizing **TF-IDF** and **Cosine Similarity**, we have tailored traditional information retrieval techniques to meet the unique challenges of Amharic text processing.
-
-This work has paved the way for future advancements in the field and demonstrates the potential for language technology solutions that can be adapted to the needs of individual languages.
-
----
-
-### **Future Work**
-
-- **Improved Stemmer**: Develop a more efficient stemmer to handle large volumes of Amharic text.
-- **Standard Stop-Word List**: Create a comprehensive and standardized list of stop words for the Amharic language.
-- **Larger Corpus**: Gather a more extensive corpus of Amharic texts to improve the accuracy and robustness of the system.
-
----
+### Stop Words
+- Common function words
+- High-frequency particles
+- Language-specific stop words
 

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Preprocessor Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .dashboard { display: flex; flex-wrap: wrap; gap: 2rem; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px #0001; padding: 2rem; width: 320px; }
+        .card h2 { margin-top: 0; }
+        .stat { color: #27ae60; font-weight: bold; }
+        .desc { color: #555; margin: 1rem 0; }
+        .output-btn { background: #f4f4f4; border: none; border-radius: 6px; padding: 0.5rem 1rem; cursor: pointer; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>Text preprocessor dashboard</h1>
+    <div class="dashboard">
+        <div class="card">
+            <h2>Markup removal</h2>
+            <div><canvas id="markupChart" width="120" height="120"></canvas></div>
+            <div>Initial characters: <span class="stat">{{ initial_chars }}</span></div>
+            <div class="desc">Markup removal means stripping tags like HTML/XML to get plain text for better indexing and search.</div>
+            <button class="output-btn">Show Output</button>
+        </div>
+        <div class="card">
+            <h2>Tokenization</h2>
+            <div><canvas id="tokenizationChart" width="120" height="120"></canvas></div>
+            <div>Initial characters: <span class="stat">{{ initial_chars }}</span></div>
+            <div class="desc">Tokenization is the process of breaking text into smaller pieces, called tokens, which can be words, phrases, or symbols. It helps in understanding the structure and meaning of the text.</div>
+            <button class="output-btn">Show Output</button>
+        </div>
+        <div class="card">
+            <h2>Normalization</h2>
+            <div><canvas id="normalizationChart" width="120" height="120"></canvas></div>
+            <div>Initial characters: <span class="stat">{{ initial_chars }}</span></div>
+            <div class="desc">Normalization standardizes text (e.g., lowercasing, removing diacritics) to improve consistency for further processing.</div>
+            <button class="output-btn">Show Output</button>
+        </div>
+        <div class="card">
+            <h2>Stopwords Removal</h2>
+            <div><canvas id="stopwordsChart" width="120" height="120"></canvas></div>
+            <div>Initial characters: <span class="stat">{{ initial_chars }}</span></div>
+            <div class="desc">Stopwords removal eliminates common words (like 'and', 'the') that do not contribute much meaning to the analysis.</div>
+            <button class="output-btn">Show Output</button>
+        </div>
+    </div>
+    <script>
+        // Markup Removal Chart
+        new Chart(document.getElementById('markupChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ markup_removed }}, {{ 100 - markup_removed }}],
+                    backgroundColor: ['#e74c3c', '#2ecc71']
+                }],
+                labels: ['Removed', 'Remaining']
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+        });
+        // Tokenization Chart
+        new Chart(document.getElementById('tokenizationChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ tokenization }}, {{ 100 - tokenization }}],
+                    backgroundColor: ['#e67e22', '#2ecc71']
+                }],
+                labels: ['Tokenized', 'Remaining']
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+        });
+        // Normalization Chart
+        new Chart(document.getElementById('normalizationChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ normalization }}, {{ 100 - normalization }}],
+                    backgroundColor: ['#2980b9', '#2ecc71']
+                }],
+                labels: ['Normalized', 'Remaining']
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+        });
+        // Stopwords Removal Chart
+        new Chart(document.getElementById('stopwordsChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ stopwords_removal }}, {{ 100 - stopwords_removal }}],
+                    backgroundColor: ['#16a085', '#2ecc71']
+                }],
+                labels: ['Removed', 'Remaining']
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+        });
+    </script>
+</body>
+</html> 

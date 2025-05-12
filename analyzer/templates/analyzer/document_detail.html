@@ -1,0 +1,118 @@
+{% extends 'analyzer/base.html' %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1>{{ document.title }}</h1>
+        <p class="text-muted">
+            {{ document.document_type }} - Uploaded on {{ document.uploaded_at|date:"M d, Y" }}
+        </p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card bg-primary text-white">
+            <div class="card-body">
+                <h5 class="card-title">Total Words</h5>
+                <h2>{{ document.word_count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-success text-white">
+            <div class="card-body">
+                <h5 class="card-title">Unique Words</h5>
+                <h2>{{ document.unique_words }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-info text-white">
+            <div class="card-body">
+                <h5 class="card-title">Language</h5>
+                <h2>{{ document.language }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stats-card bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Zipf Correlation</h5>
+                <h2>{{ document.zipf_correlation }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Word Frequency Distribution</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="frequencyChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Top Words</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Word</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for word, freq in document.analysis_results.word_frequencies.items|slice:":10" %}
+                            <tr>
+                                <td>{{ word }}</td>
+                                <td>{{ freq }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const wordFreq = {{ document.analysis_results.word_frequencies|safe }};
+    const words = Object.keys(wordFreq).slice(0, 10);
+    const frequencies = words.map(word => wordFreq[word]);
+
+    const ctx = document.getElementById('frequencyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: words,
+            datasets: [{
+                label: 'Word Frequency',
+                data: frequencies,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %} 
